@@ -67,25 +67,104 @@ public class SpaceData {
   }
 
   /**
+   * Finds the maximum Kp-index of all measurements of a geomagnetic storm that are present in a
+   * JSON array.
+   * @param allKpIndex JSON array containing objects with kpIndex values
+   * @return highest Kp-Index value in the JSONArray
+   * @throws JSONException throws if allKpIndex is not structured as expected from API or is empty
+   */
+  private int getKpIndex(JSONArray allKpIndex) throws JSONException {
+    int maxKpIndex = 0;
+    for (int i = 0; i < allKpIndex.length(); i++) {
+      int currentKpIndex = allKpIndex.getJSONObject(i).getInt("kpIndex");
+      maxKpIndex = Math.max(maxKpIndex, currentKpIndex);
+    }
+    return maxKpIndex;
+  }
+
+  /**
    * Forms an array of space data objects from JSON data using a selected data type.
    * @param jsonData JSON array containing response data from API
    * @param selection type of API that data was requested from
    * @return array of SpaceData objects
    */
   private SpaceData[] formSpaceData(@NonNull SpaceData.DataType selection,
-                                    @NonNull JSONArray jsonData) {
-    // TODO: process JSON object data into SpaceData objects and return as array
+                                    @NonNull JSONArray jsonData) throws JSONException {
     SpaceData[] spaceData = new SpaceData[jsonData.length()];
-    for (int i = 0; i < jsonData.length(); i++) {
-      switch (selection) {
-        case CME:
-          break;
-        case GST:
-          break;
-        case FLR:
-          break;
-      }
+    JSONObject dataObject;
+    String id;
+    String dateAndTime;
+    String description;
+    URL hyperlink;
+    switch (selection) {
+      case CME:
+        for (int i = 0; i < jsonData.length(); i++) {
+          dataObject = jsonData.getJSONObject(i);
+          id = dataObject.getString("activityID");
+          dateAndTime = dataObject.getString("startTime");
+          description = dataObject.getString("note");
+          try {
+            hyperlink = new URL(dataObject.getString("link"));
+          } catch (MalformedURLException e) {
+            e.printStackTrace();
+            hyperlink = null; // No clickable link if URL is empty or invalid
+          }
+          spaceData[i] = new SpaceData(id, selection, dateAndTime, description, hyperlink);
+        }
+        break;
+      case GST:
+        for (int i = 0; i < jsonData.length(); i++) {
+          dataObject = jsonData.getJSONObject(i);
+          id = dataObject.getString("gstID");
+          dateAndTime = dataObject.getString("startTime");
+          JSONArray allKpIndex = dataObject.getJSONArray("allKpIndex");
+          if (allKpIndex.length() > 0) {
+            description = "The current highest measured Kp-index is "
+                + getKpIndex(allKpIndex)
+                + ". The Kp-index measures how"
+                + " much the geomagnetic storm is disturbing"
+                + " the horizontal part of the Earth's magnetic field."
+                + " It ranges from 1, for low solar wind activity,"
+                + " to 5, for a geomagnetic storm, to 9, for an intense one.";
+          } else {
+            description = "There are no current measurements of the Kp index available."
+                + " The Kp-index measures how"
+                + " much the geomagnetic storm is disturbing"
+                + " the horizontal part of the Earth's magnetic field."
+                + " It ranges from 1, for low solar wind activity,"
+                + " to 5, for a geomagnetic storm, to 9, for an intense one.";
+          }
+          try {
+            hyperlink = new URL(dataObject.getString("link"));
+          } catch (MalformedURLException e) {
+            e.printStackTrace();
+            hyperlink = null; // No clickable link if URL is empty or invalid
+          }
+          spaceData[i] = new SpaceData(id, selection, dateAndTime, description, hyperlink);
+        }
+        break;
+      case FLR:
+        for (int i = 0; i < jsonData.length(); i++) {
+          dataObject = jsonData.getJSONObject(i);
+          id = dataObject.getString("flrID");
+          dateAndTime = dataObject.getString("beginTime");
+          String classType = dataObject.getString("classType");
+          description = "Solar flare class: " + classType
+              + ". The letter, one of A, B, C, M, or X, represents the"
+              + " solar flare's size class, where A is the smallest and"
+              + " X is the largest. This is appended with a number"
+              + " from 1 to 10 which more precisely represents its size.";
+          try {
+            hyperlink = new URL(dataObject.getString("link"));
+          } catch (MalformedURLException e) {
+            e.printStackTrace();
+            hyperlink = null; // No clickable link if URL is empty or invalid
+          }
+          spaceData[i] = new SpaceData(id, selection, dateAndTime, description, hyperlink);
+        }
+        break;
     }
+
     return spaceData;
   }
 
@@ -120,7 +199,7 @@ public class SpaceData {
       } catch (JSONException e) {
         e.printStackTrace();
         MainActivity.showToast(context,
-            "A problem occurred. No data was received from the API.");
+            "A problem occurred. Invalid or empty data was received from the API.");
         return null;  // No data could be obtained from API
       }
     } catch (MalformedURLException e) {
@@ -133,6 +212,16 @@ public class SpaceData {
       return null;
     }
 
-    return formSpaceData(selection, data);
+    // Extract data from JSONArray
+    SpaceData[] spaceData;
+    try {
+      spaceData = formSpaceData(selection, data);
+    } catch (JSONException e) {
+      e.printStackTrace();
+      MainActivity.showToast(context,
+          "A problem occurred. Invalid or empty data was received from the API.");
+      return null;
+    }
+    return spaceData;
   }
 }
