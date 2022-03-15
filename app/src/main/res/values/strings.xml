@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">SpaceTrackGO</string>
+    <string name="CME_button_name">Coronal Mass Ejections</string>
+    <string name="GST_button_name">Geomagnetic Storms</string>
+    <string name="FLR_button_name">Solar Flares</string>
+    <string name="Saved_button_name">Saved</string>
 </resources>
