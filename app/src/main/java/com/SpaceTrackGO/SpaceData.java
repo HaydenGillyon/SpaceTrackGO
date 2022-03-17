@@ -1,7 +1,5 @@
 package com.SpaceTrackGO;
 
-import android.content.Context;
-
 import androidx.annotation.NonNull;
 
 import java.io.BufferedInputStream;
@@ -21,11 +19,11 @@ import org.json.JSONObject;
  * informational updates on space activity.
  */
 public class SpaceData {
-  String id;
-  DataType dataType;
-  String dateAndTime;
-  String description;
-  URL hyperlink;
+  private String id;
+  private DataType dataType;
+  private String dateAndTime;
+  private String description;
+  private URL hyperlink;
 
   // Replace with own API KEY if deploying large-scale
   static final String API_KEY = "DEMO_KEY";
@@ -66,6 +64,26 @@ public class SpaceData {
     this.hyperlink = hyperlink;
   }
 
+  public String getId() {
+    return id;
+  }
+
+  public DataType getDataType() {
+    return dataType;
+  }
+
+  public String getDateAndTime() {
+    return dateAndTime;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public URL getHyperlink() {
+    return hyperlink;
+  }
+
   /**
    * Finds the maximum Kp-index of all measurements of a geomagnetic storm that are present in a
    * JSON array.
@@ -73,7 +91,7 @@ public class SpaceData {
    * @return highest Kp-Index value in the JSONArray
    * @throws JSONException throws if allKpIndex is not structured as expected from API or is empty
    */
-  private int getKpIndex(JSONArray allKpIndex) throws JSONException {
+  private static int getKpIndex(JSONArray allKpIndex) throws JSONException {
     int maxKpIndex = 0;
     for (int i = 0; i < allKpIndex.length(); i++) {
       int currentKpIndex = allKpIndex.getJSONObject(i).getInt("kpIndex");
@@ -87,8 +105,9 @@ public class SpaceData {
    * @param jsonData JSON array containing response data from API
    * @param selection type of API that data was requested from
    * @return array of SpaceData objects
+   * @throws JSONException throws if allKpIndex is not structured as expected from API or is empty
    */
-  private SpaceData[] formSpaceData(@NonNull SpaceData.DataType selection,
+  private static SpaceData[] formSpaceData(@NonNull SpaceData.DataType selection,
                                     @NonNull JSONArray jsonData) throws JSONException {
     SpaceData[] spaceData = new SpaceData[jsonData.length()];
     JSONObject dataObject;
@@ -171,15 +190,18 @@ public class SpaceData {
   /**
    * Queries a certain API for recent data based on the selection, and produces SpaceData objects
    * from the returned results.
-   * @param context application context
    * @param selection name of selected API to query where:
    *                  CME is Coronal Mass Ejection,
    *                  GST is Geomagnetic Storm,
    *                  FLR is Solar Flare
    * @return array of SpaceData objects with data from the selected API or null if no data was
    *         received
+   * @throws JSONException if the data returned by the selected API is not structured as expected or
+   *                       is empty
+   * @throws IOException if a problem occurred when connecting to the selected API over the internet
    */
-  public SpaceData[] getApiData(Context context, @NonNull SpaceData.DataType selection) {
+  public static SpaceData[] getApiData(@NonNull SpaceData.DataType selection)
+      throws JSONException, IOException{
     JSONArray data;
     try {
       // Build URL with parameters
@@ -198,18 +220,17 @@ public class SpaceData {
         // No finally connection.disconnect() as the streams are closed but Socket is cached
       } catch (JSONException e) {
         e.printStackTrace();
-        MainActivity.showToast(context,
-            "A problem occurred. Invalid or empty data was received from the API.");
-        return null;  // No data could be obtained from API
+        String msg =
+            "A problem occurred. Invalid or empty data was received from the API.";
+        throw new JSONException(msg); // No data could be obtained from API
       }
     } catch (MalformedURLException e) {
       throw new AssertionError(e); // URL in enum shouldn't be malformed
     } catch (IOException e) {
       e.printStackTrace();
-      MainActivity.showToast(context,
-          "A problem occurred. Error when trying to connect to API."
-              + " Try turning on WI-FI and refreshing");
-      return null;
+      String msg = "A problem occurred. Error when trying to connect to API."
+          + " Try turning on WI-FI and refreshing";
+      throw new IOException(msg);
     }
 
     // Extract data from JSONArray
@@ -218,9 +239,9 @@ public class SpaceData {
       spaceData = formSpaceData(selection, data);
     } catch (JSONException e) {
       e.printStackTrace();
-      MainActivity.showToast(context,
-          "A problem occurred. Invalid or empty data was received from the API.");
-      return null;
+      String msg =
+          "A problem occurred. Invalid or empty data was received from the API.";
+      throw new JSONException(msg);
     }
     return spaceData;
   }

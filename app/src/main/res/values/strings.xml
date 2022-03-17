@@ -1,7 +1,17 @@
 <resources>
     <string name="app_name">SpaceTrackGO</string>
+    <string name="welcome">Welcome to SpaceTrackGO! Click a button below to see latest
+        updates of your chosen event type! Hint: Press Saved to see your previously saved
+        events.</string>
     <string name="CME_button_name">Coronal Mass Ejections</string>
     <string name="GST_button_name">Geomagnetic Storms</string>
     <string name="FLR_button_name">Solar Flares</string>
     <string name="Saved_button_name">Saved</string>
+    <string name="CME_heading">Coronal Mass Ejection</string>
+    <string name="GST_heading">Geomagnetic Storm</string>
+    <string name="FLR_heading">Solar Flare</string>
+    <string name="prefs_name">SpaceTrackGO_prefs</string>
+    <string name="refresh">Refresh</string>
+    <string name="save">Save Item</string>
+    <string name="space_picture">Space picture</string>
 </resources>
