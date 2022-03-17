@@ -1,9 +1,12 @@
 package com.SpaceTrackGO;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -13,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -32,10 +36,37 @@ public class SpaceDataAdapter extends RecyclerView.Adapter<SpaceDataAdapter.View
     }
   }
 
+  class ItemOnClickListener implements OnClickListener {
+    @Override
+    public void onClick(final View view) {
+      int itemPosition = recyclerView.getChildLayoutPosition(view);
+      SpaceData item = spaceDataItems.get(itemPosition);
+      openWebPage(item.getHyperlink());
+    }
+  }
+
+  private final OnClickListener onClickListener = new ItemOnClickListener();
+  private RecyclerView recyclerView;
   private List<SpaceData> spaceDataItems;
 
   public SpaceDataAdapter(List<SpaceData> spaceDataItems) {
     this.spaceDataItems = spaceDataItems;
+  }
+
+  public void openWebPage(URL url) {
+    Uri webpage;
+    webpage = Uri.parse(url.toString());
+    Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+    Context context = recyclerView.getContext();
+    if (intent.resolveActivity(context.getPackageManager()) != null) {
+      context.startActivity(intent);
+    }
+  }
+
+  @Override
+  public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+    super.onAttachedToRecyclerView(recyclerView);
+    this.recyclerView = recyclerView; // Obtain reference to the RecyclerView
   }
 
   @NonNull
@@ -45,6 +76,7 @@ public class SpaceDataAdapter extends RecyclerView.Adapter<SpaceDataAdapter.View
     LayoutInflater inflater = LayoutInflater.from(context);
 
     View spaceDataView = inflater.inflate(R.layout.item_space, parent, false);
+    spaceDataView.setOnClickListener(onClickListener);
     return new ViewHolder(spaceDataView);
   }
 
