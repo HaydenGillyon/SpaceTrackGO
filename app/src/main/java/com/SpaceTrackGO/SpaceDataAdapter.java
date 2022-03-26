@@ -7,6 +7,7 @@ import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -45,12 +46,27 @@ public class SpaceDataAdapter extends RecyclerView.Adapter<SpaceDataAdapter.View
     }
   }
 
+  class ItemOnLongClickListener implements OnLongClickListener {
+    @Override
+    public boolean onLongClick(final View view) {
+      longClickPosition = recyclerView.getChildLayoutPosition(view);
+      return false;
+    }
+  }
+
   private final OnClickListener onClickListener = new ItemOnClickListener();
+  private final OnLongClickListener onLongClickListener = new ItemOnLongClickListener();
   private RecyclerView recyclerView;
   private List<SpaceData> spaceDataItems;
+  private int longClickPosition;
 
   public SpaceDataAdapter(List<SpaceData> spaceDataItems) {
     this.spaceDataItems = spaceDataItems;
+  }
+
+  public void addItemToSaved() {
+    SpaceData spaceDataItem = spaceDataItems.get(longClickPosition);
+    // TODO
   }
 
   public void openWebPage(URL url) {
@@ -77,6 +93,7 @@ public class SpaceDataAdapter extends RecyclerView.Adapter<SpaceDataAdapter.View
 
     View spaceDataView = inflater.inflate(R.layout.item_space, parent, false);
     spaceDataView.setOnClickListener(onClickListener);
+    spaceDataView.setOnLongClickListener(onLongClickListener);
     return new ViewHolder(spaceDataView);
   }
 
@@ -94,7 +111,7 @@ public class SpaceDataAdapter extends RecyclerView.Adapter<SpaceDataAdapter.View
     String heading;
     SpaceData.DataType dataType = spaceDataItem.getDataType();
     // Default if null (viewing saved data)
-    dataType = dataType == null ? SpaceData.DataType.CME : dataType;
+    dataType = (dataType == null) ? SpaceData.DataType.CME : dataType;
     switch (dataType) {
       case CME:
         img = R.drawable.cme_icon;

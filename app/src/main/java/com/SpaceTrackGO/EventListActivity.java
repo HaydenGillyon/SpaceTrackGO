@@ -9,9 +9,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -50,6 +52,10 @@ public class EventListActivity extends AppCompatActivity {
       }
     });
 
+    // Allow listed items to have a context menu
+    registerForContextMenu(recyclerView);
+
+    // Load data for first time
     refresh();
   }
 
@@ -94,5 +100,19 @@ public class EventListActivity extends AppCompatActivity {
       default:
         return super.onOptionsItemSelected(item);
     }
+  }
+
+  @Override
+  public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+    MenuInflater inflater = getMenuInflater();
+    inflater.inflate(R.menu.save_item_menu, menu);
+  }
+
+  @Override
+  public boolean onContextItemSelected(@NonNull MenuItem item) {
+    // No null pointer exception as RecyclerView should have adapter to return by this point
+    if (item.getItemId() == R.id.save_item)
+      ((SpaceDataAdapter) recyclerView.getAdapter()).addItemToSaved();
+    return super.onContextItemSelected(item);
   }
 }
