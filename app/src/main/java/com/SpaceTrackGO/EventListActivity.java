@@ -19,6 +19,9 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Creates the Event List activity that displays a list of data fetched from a selected API service.
+ */
 public class EventListActivity extends AppCompatActivity {
   SharedPreferences prefs;
   private SpaceDataViewModel viewModel;
@@ -43,6 +46,10 @@ public class EventListActivity extends AppCompatActivity {
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
     viewModel.getSpaceData().observe(this, new Observer<List<SpaceData>>() {
+      /**
+       * Updates the list of space data objects and alerts the RecyclerView's adapter to the change.
+       * @param spaceData list of space data objects to be displayed
+       */
       @Override
       public void onChanged(List<SpaceData> spaceData) {
         spaceDataList.clear();
@@ -81,6 +88,11 @@ public class EventListActivity extends AppCompatActivity {
     SpaceDataRepository.getInstance().loadSpaceData(this, dataTypeSelection);
   }
 
+  /**
+   * Inflates the event list options menu into the passed menu object.
+   * @param menu object to load options menu into
+   * @return true if menu was inflated successfully
+   */
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     MenuInflater inflater = getMenuInflater();
@@ -88,6 +100,11 @@ public class EventListActivity extends AppCompatActivity {
     return true;
   }
 
+  /**
+   * Checks if the user selected the refresh option and refreshes the space data if so.
+   * @param item menu item selected by the user
+   * @return true if handling the option selection was successful
+   */
   @Override
   public boolean onOptionsItemSelected(@NonNull MenuItem item) {
     switch (item.getItemId()) {
@@ -99,12 +116,24 @@ public class EventListActivity extends AppCompatActivity {
     }
   }
 
+  /**
+   * Inflates the event list options menu into the passed menu object.
+   * @param menu object to load context menu into
+   * @param v the view for which the context menu is being built
+   * @param menuInfo extra info about the item for which the context menu will be shown
+   */
   @Override
   public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
     MenuInflater inflater = getMenuInflater();
     inflater.inflate(R.menu.share_item_menu, menu);
   }
 
+  /**
+   * Checks if the user selected the share item option and sends the space data the user selected in
+   * a share intent if so.
+   * @param item menu item selected by the user
+   * @return false to allow normal context menu processing to continue
+   */
   @Override
   public boolean onContextItemSelected(@NonNull MenuItem item) {
     // No null pointer exception as RecyclerView should have adapter to return by this point

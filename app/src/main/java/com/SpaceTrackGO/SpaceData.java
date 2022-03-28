@@ -67,22 +67,43 @@ public class SpaceData {
     this.hyperlink = hyperlink;
   }
 
+  /**
+   * Returns the unique identifier of the space data object provided by the API that sent it.
+   * @return the id of the space data
+   */
   public String getId() {
     return id;
   }
 
+  /**
+   * Returns the type of the space data object, decided by which API endpoint it was taken from.
+   * @return the type of the space data
+   */
   public DataType getDataType() {
     return dataType;
   }
 
+  /**
+   * Returns the date and time that the event the space data object describes occurred.
+   * @return the date and time of the space data in UTC
+   */
   public String getDateAndTime() {
     return dateAndTime;
   }
 
+  /**
+   * Returns a description of the space event using information obtained from the API endpoint that
+   * it was taken from.
+   * @return the description of the space event
+   */
   public String getDescription() {
     return description;
   }
 
+  /**
+   * Returns a URL to the official report on the space event described by the space data object.
+   * @return the report URL
+   */
   public URL getHyperlink() {
     return hyperlink;
   }

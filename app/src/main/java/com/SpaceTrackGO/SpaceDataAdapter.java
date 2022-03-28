@@ -23,12 +23,24 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Holds the data that the Event List activity's RecyclerView shows, and keeps it updated when
+ * changes occur such as the user pressing refresh or selecting a different data type.
+ */
 public class SpaceDataAdapter extends RecyclerView.Adapter<SpaceDataAdapter.ViewHolder> {
+  /**
+   * Holds a view containing data on a space event while it is within the user's focus.
+   */
   public class ViewHolder extends RecyclerView.ViewHolder {
     public ImageView spaceImage;
     public TextView itemHeading;
     public TextView itemDesc;
 
+    /**
+     * Constructs the ViewHolder by setting its access to the different layout components of a data
+     * item's view.
+     * @param itemView view that defines the layout of each data item in the RecyclerView
+     */
     public ViewHolder(View itemView) {
       super(itemView);
       spaceImage = (ImageView) itemView.findViewById(R.id.spaceImage);
@@ -37,6 +49,10 @@ public class SpaceDataAdapter extends RecyclerView.Adapter<SpaceDataAdapter.View
     }
   }
 
+  /**
+   * Listens for clicks on the RecyclerView to determine which item was selected and open its
+   * hyperlink in a web browser.
+   */
   class ItemOnClickListener implements OnClickListener {
     @Override
     public void onClick(final View view) {
@@ -46,6 +62,10 @@ public class SpaceDataAdapter extends RecyclerView.Adapter<SpaceDataAdapter.View
     }
   }
 
+  /**
+   * Listens for long clicks on the RecyclerView to determine which item was selected and save this
+   * value for use when responding to context menu actions.
+   */
   class ItemOnLongClickListener implements OnLongClickListener {
     @Override
     public boolean onLongClick(final View view) {
@@ -60,6 +80,10 @@ public class SpaceDataAdapter extends RecyclerView.Adapter<SpaceDataAdapter.View
   private List<SpaceData> spaceDataItems;
   private int longClickPosition;
 
+  /**
+   * Constructs the SpaceDataAdapter by assigning the space data items that it initially holds.
+   * @param spaceDataItems
+   */
   public SpaceDataAdapter(List<SpaceData> spaceDataItems) {
     this.spaceDataItems = spaceDataItems;
   }

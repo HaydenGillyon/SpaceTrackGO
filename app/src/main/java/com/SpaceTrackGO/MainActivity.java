@@ -7,6 +7,9 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 
+/**
+ * Creates the main activity of the app where users can choose a type of space data to read about.
+ */
 public class MainActivity extends AppCompatActivity {
   SharedPreferences prefs;
 
