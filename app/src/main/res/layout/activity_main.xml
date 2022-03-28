@@ -49,12 +49,6 @@
                 android:layout_height="wrap_content"
                 android:text="@string/FLR_button_name" />
 
-            <Button
-                android:id="@+id/Saved_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/Saved_button_name" />
-
         </LinearLayout>
 
     </LinearLayout>

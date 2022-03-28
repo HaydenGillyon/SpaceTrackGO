@@ -12,6 +12,6 @@
     <string name="FLR_heading">Solar Flare</string>
     <string name="prefs_name">SpaceTrackGO_prefs</string>
     <string name="refresh">Refresh</string>
-    <string name="save">Save Item</string>
+    <string name="share">Share Item</string>
     <string name="space_picture">Space picture</string>
 </resources>

@@ -38,18 +38,11 @@ public class SpaceDataRepository {
 
   public void loadSpaceData(Context context, SpaceData.DataType dataType) {
     new Thread(() -> {
-      if (dataType == null) {
-        // Update liveSpaceData from saved data (database)
-        //TODO
-      } else {
-        // Update liveSpaceData from API
-        try {
-          liveSpaceData.postValue(
-              new ArrayList<>(Arrays.asList(SpaceData.getApiData(dataType)))
-          );
-        } catch (JSONException | IOException e) {
-          e.printStackTrace();
-        }
+      // Update liveSpaceData from API
+      try {
+        liveSpaceData.postValue(SpaceData.getApiData(dataType));
+      } catch (JSONException | IOException e) {
+        e.printStackTrace();
       }
     }).start();
   }

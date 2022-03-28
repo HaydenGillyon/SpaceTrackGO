@@ -71,9 +71,6 @@ public class EventListActivity extends AppCompatActivity {
       case "FLR":
         dataTypeSelection = SpaceData.DataType.FLR;
         break;
-      case "saved":
-        dataTypeSelection = null;
-        break;
       default:
         Toast.makeText(this, "An error occurred, please try again.", Toast.LENGTH_SHORT)
             .show();
@@ -105,14 +102,14 @@ public class EventListActivity extends AppCompatActivity {
   @Override
   public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
     MenuInflater inflater = getMenuInflater();
-    inflater.inflate(R.menu.save_item_menu, menu);
+    inflater.inflate(R.menu.share_item_menu, menu);
   }
 
   @Override
   public boolean onContextItemSelected(@NonNull MenuItem item) {
     // No null pointer exception as RecyclerView should have adapter to return by this point
-    if (item.getItemId() == R.id.save_item)
-      ((SpaceDataAdapter) recyclerView.getAdapter()).addItemToSaved();
+    if (item.getItemId() == R.id.share_item)
+      ((SpaceDataAdapter) recyclerView.getAdapter()).shareItem(this);
     return super.onContextItemSelected(item);
   }
 }

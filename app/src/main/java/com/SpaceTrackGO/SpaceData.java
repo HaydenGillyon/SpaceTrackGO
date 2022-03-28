@@ -8,6 +8,9 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Scanner;
 
 import org.json.JSONArray;
@@ -19,11 +22,11 @@ import org.json.JSONObject;
  * informational updates on space activity.
  */
 public class SpaceData {
-  private String id;
-  private DataType dataType;
-  private String dateAndTime;
-  private String description;
-  private URL hyperlink;
+  private final String id;
+  private final DataType dataType;
+  private final String dateAndTime;
+  private final String description;
+  private final URL hyperlink;
 
   // Replace with own API KEY if deploying large-scale
   static final String API_KEY = "DEMO_KEY";
@@ -194,13 +197,13 @@ public class SpaceData {
    *                  CME is Coronal Mass Ejection,
    *                  GST is Geomagnetic Storm,
    *                  FLR is Solar Flare
-   * @return array of SpaceData objects with data from the selected API or null if no data was
-   *         received
+   * @return ArrayList of SpaceData objects with data from the selected API in reverse chronological
+   *         order or null if no data was received
    * @throws JSONException if the data returned by the selected API is not structured as expected or
    *                       is empty
    * @throws IOException if a problem occurred when connecting to the selected API over the internet
    */
-  public static SpaceData[] getApiData(@NonNull SpaceData.DataType selection)
+  public static ArrayList<SpaceData> getApiData(@NonNull SpaceData.DataType selection)
       throws JSONException, IOException{
     JSONArray data;
     try {
@@ -243,6 +246,10 @@ public class SpaceData {
           "A problem occurred. Invalid or empty data was received from the API.";
       throw new JSONException(msg);
     }
-    return spaceData;
+
+    // Reverse data order to have most recent first and convert to list
+    ArrayList<SpaceData> spaceDataList = new ArrayList<>(Arrays.asList(spaceData));
+    Collections.reverse(spaceDataList);
+    return spaceDataList;
   }
 }

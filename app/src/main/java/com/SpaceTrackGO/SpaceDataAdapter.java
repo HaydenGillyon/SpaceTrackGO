@@ -64,9 +64,34 @@ public class SpaceDataAdapter extends RecyclerView.Adapter<SpaceDataAdapter.View
     this.spaceDataItems = spaceDataItems;
   }
 
-  public void addItemToSaved() {
+  public void shareItem(Context context) {
     SpaceData spaceDataItem = spaceDataItems.get(longClickPosition);
-    // TODO
+    String heading;
+    SpaceData.DataType dataType = spaceDataItem.getDataType();
+    switch (dataType) {
+      case CME:
+        heading = context.getString(R.string.CME_heading);
+        break;
+      case GST:
+        heading = context.getString(R.string.GST_heading);
+        break;
+      case FLR:
+        heading = context.getString(R.string.FLR_heading);
+        break;
+      default:
+        heading = "space data";
+    }
+    String shareText = "Look at this " + heading + " I found on SpaceTrackGO! Here's the"
+        + " official report: " + spaceDataItem.getHyperlink();
+
+    // Send share intent
+    Intent sendIntent = new Intent(Intent.ACTION_SEND);
+    sendIntent.putExtra(Intent.EXTRA_TEXT, shareText);
+    sendIntent.setType("text/plain");
+    Intent shareIntent = Intent.createChooser(sendIntent, null);
+    if (shareIntent.resolveActivity(context.getPackageManager()) != null) {
+      context.startActivity(shareIntent);
+    }
   }
 
   public void openWebPage(URL url) {
@@ -110,8 +135,6 @@ public class SpaceDataAdapter extends RecyclerView.Adapter<SpaceDataAdapter.View
     int img;
     String heading;
     SpaceData.DataType dataType = spaceDataItem.getDataType();
-    // Default if null (viewing saved data)
-    dataType = (dataType == null) ? SpaceData.DataType.CME : dataType;
     switch (dataType) {
       case CME:
         img = R.drawable.cme_icon;

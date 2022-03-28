@@ -41,14 +41,6 @@ public class MainActivity extends AppCompatActivity {
         startActivity(listEvents);
       }
     });
-    findViewById(R.id.Saved_button).setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        setSelection("saved");
-        Intent listEvents = new Intent(MainActivity.this, EventListActivity.class);
-        startActivity(listEvents);
-      }
-    });
   }
 
   /**
