@@ -13,11 +13,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Keeps mutable access to the live space data list and handles the asynchronous calls to load new
+ * data and change what is being stored.
+ */
 public class SpaceDataRepository {
   private static SpaceDataRepository instance;
 
   private MutableLiveData<List<SpaceData>> liveSpaceData;
 
+  /**
+   * Gets the single instance of the SpaceDataRepository class. This won't be instantiated until
+   * called for the first time.
+   * @return the singleton instance of SpaceDataRepository
+   */
   public static SpaceDataRepository getInstance() {
     if (instance == null) {
       synchronized (SpaceDataRepository.class) {
@@ -29,6 +38,11 @@ public class SpaceDataRepository {
     return instance;
   }
 
+  /**
+   * Returns the liveSpaceData list in an immutable state for reading the latest space data that
+   * has been obtained.
+   * @return an immutable list of SpaceData objects
+   */
   public LiveData<List<SpaceData>> getSpaceData() {
     if (liveSpaceData == null) {
       liveSpaceData = new MutableLiveData<List<SpaceData>>();
@@ -36,7 +50,11 @@ public class SpaceDataRepository {
     return liveSpaceData;
   }
 
-  public void loadSpaceData(Context context, SpaceData.DataType dataType) {
+  /**
+   * Asynchronously loads new space data from the API corresponding to the selected dataType.
+   * @param dataType the type of SpaceData to load from an API
+   */
+  public void loadSpaceData(SpaceData.DataType dataType) {
     new Thread(() -> {
       // Update liveSpaceData from API
       try {

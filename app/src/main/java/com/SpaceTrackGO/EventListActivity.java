@@ -85,7 +85,7 @@ public class EventListActivity extends AppCompatActivity {
   }
 
   private void refresh() {
-    SpaceDataRepository.getInstance().loadSpaceData(this, dataTypeSelection);
+    SpaceDataRepository.getInstance().loadSpaceData(dataTypeSelection);
   }
 
   /**

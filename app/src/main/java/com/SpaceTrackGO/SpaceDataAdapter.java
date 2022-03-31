@@ -88,6 +88,12 @@ public class SpaceDataAdapter extends RecyclerView.Adapter<SpaceDataAdapter.View
     this.spaceDataItems = spaceDataItems;
   }
 
+  /**
+   * Sends a share intent for the space data item that was selected with a long click. This will
+   * be called if the user chooses to share an item using the context menu which must be accessed
+   * with a long click, so the variable longClickPosition will be set.
+   * @param context the application context
+   */
   public void shareItem(Context context) {
     SpaceData spaceDataItem = spaceDataItems.get(longClickPosition);
     String heading;
@@ -118,6 +124,11 @@ public class SpaceDataAdapter extends RecyclerView.Adapter<SpaceDataAdapter.View
     }
   }
 
+  /**
+   * Sends an implicit intent to view the webpage found at a URL. This will open a browser on the
+   * device in most cases.
+   * @param url uniform resource locator (URL) to be viewed
+   */
   public void openWebPage(URL url) {
     Uri webpage;
     webpage = Uri.parse(url.toString());
@@ -128,12 +139,23 @@ public class SpaceDataAdapter extends RecyclerView.Adapter<SpaceDataAdapter.View
     }
   }
 
+  /**
+   * Attaches the SpaceDataAdapter to the RecyclerView.
+   * @param recyclerView the RecyclerView to be attached
+   */
   @Override
   public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
     super.onAttachedToRecyclerView(recyclerView);
     this.recyclerView = recyclerView; // Obtain reference to the RecyclerView
   }
 
+  /**
+   * Inflates the layout of the space data item view into a new ViewHolder and places this inside
+   * the parent ViewGroup. This enables the ViewHolders to represent the data from space events.
+   * @param parent ViewGroup to house the created ViewHolder
+   * @param viewType the view type of the new View created within the ViewHolder
+   * @return the created ViewHolder
+   */
   @NonNull
   @Override
   public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -146,6 +168,12 @@ public class SpaceDataAdapter extends RecyclerView.Adapter<SpaceDataAdapter.View
     return new ViewHolder(spaceDataView);
   }
 
+  /**
+   * Binds the data from a space data object to a ViewHolder within the SpaceDataAdapter's
+   * RecyclerView.
+   * @param holder the ViewHolder to have the space data bound to it
+   * @param position the number of the space data item stored within the adapter to be shown
+   */
   @Override
   public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
     SpaceData spaceDataItem = spaceDataItems.get(position);
@@ -198,6 +226,10 @@ public class SpaceDataAdapter extends RecyclerView.Adapter<SpaceDataAdapter.View
     itemDesc.setText(spaceDataItem.getDescription());
   }
 
+  /**
+   * Returns the number of space data items the adapter is holding.
+   * @return the count of items within the spaceDataItems list
+   */
   @Override
   public int getItemCount() {
     return spaceDataItems.size();
